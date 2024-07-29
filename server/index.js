@@ -1,9 +1,12 @@
+// importing the required modules and libs
 const express = require('express');
 const bodyParser = require('body-parser');
-require('dotenv').config();
+const env = require('./config/environment.js');
+const db = require('./config/mongoose.js');
 
-const PORT = process.env.PORT || 8000;
+const PORT = env.PORT;
 const app = express();
+// using the middlewares / configure
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
