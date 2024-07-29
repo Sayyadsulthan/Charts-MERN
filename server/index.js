@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const env = require('./config/environment.js');
 const db = require('./config/mongoose.js');
+require('./models/Transaction.js');
 
 const PORT = env.PORT;
 const app = express();
