@@ -86,7 +86,6 @@ const getStatistics = async (req, res) => {
             },
         });
 
-        console.log(soldItems);
         // taking the sum of current month
         const totalSaleAmount = soldItems.reduce((total, item) => total + item.price, 0);
         // sold and unsold items
@@ -104,4 +103,84 @@ const getStatistics = async (req, res) => {
     }
 };
 
-module.exports = { getTransactions, getStatistics };
+const getBarChartData = async (req, res) => {
+    try {
+        const { month } = req.query;
+
+        if (month < 1 || month > 12) {
+            return res.status(400).json({ error: 'Invalid month' });
+        }
+
+        // find the transactions for specific month
+        const transactions = await Transaction.find({
+            $expr: {
+                $and: [
+                    { $gte: [{ $month: '$dateOfSale' }, month] },
+                    { $lte: [{ $month: '$dateOfSale' }, month] },
+                ],
+            },
+        });
+
+        // creating price range
+        const priceRange = {
+            '0-100': 0,
+            '101-200': 0,
+            '201-300': 0,
+            '301-400': 0,
+            '401-500': 0,
+            '501-600': 0,
+            '601-700': 0,
+            '701-800': 0,
+            '801-900': 0,
+            '901-above': 0,
+        };
+        /* 
+        //this also works
+        for (let key in transactions) {
+            let price = transactions[key].price;
+            if (price >= 0 && price <= 100) priceRange['0-100']++;
+            if (price <= 200) priceRange['101-200']++;
+            if (price <= 300) priceRange['201-300']++;
+            if (price <= 400) priceRange['301-400']++;
+            if (price <= 500) priceRange['401-500']++;
+            if (price <= 600) priceRange['501-600']++;
+            if (price <= 700) priceRange['601-700']++;
+            if (price <= 800) priceRange['701-800']++;
+            if (price <= 900) priceRange['801-900']++;
+            if (price >= 901) priceRange['901-above']++;
+        }
+        */
+
+        // iterate over transactions and mapping and increasing val
+        transactions.forEach((transac) => {
+            let price = transac.price;
+            if (price >= 0 && price <= 100) priceRange['0-100']++;
+            if (price <= 200) priceRange['101-200']++;
+            if (price <= 300) priceRange['201-300']++;
+            if (price <= 400) priceRange['301-400']++;
+            if (price <= 500) priceRange['401-500']++;
+            if (price <= 600) priceRange['501-600']++;
+            if (price <= 700) priceRange['601-700']++;
+            if (price <= 800) priceRange['701-800']++;
+            if (price <= 900) priceRange['801-900']++;
+            if (price >= 901) priceRange['901-above']++;
+        });
+
+        const result = [];
+        for (let range in priceRange) {
+            // creating the range obj
+            let data = {
+                _id: range,
+                count: priceRange[range],
+            };
+            // adding the range and count object to result array
+            result.push(data);
+        }
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ success: false, message: 'Internal server Error' });
+    }
+};
+module.exports = { getTransactions, getStatistics, getBarChartData };
