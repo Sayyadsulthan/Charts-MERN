@@ -7,6 +7,7 @@ const {
     getTransactions,
     getStatistics,
     getBarChartData,
+    getPieData,
 } = require('./controllers/transactionController.js');
 require('./models/Transaction.js');
 
@@ -19,5 +20,6 @@ app.use(express.json());
 app.get('/api/transactions', getTransactions);
 app.get('/api/stastics', getStatistics);
 app.get('/api/bar-data', getBarChartData);
+app.get('/api/pie-data', getPieData);
 
 app.listen(PORT, () => console.log('Server is running on Port :', PORT));

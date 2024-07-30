@@ -183,4 +183,34 @@ const getBarChartData = async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server Error' });
     }
 };
-module.exports = { getTransactions, getStatistics, getBarChartData };
+
+const getPieData = async (req, res) => {
+    const { month } = req.query;
+    if (month < 1 || month > 12) {
+        return res.status(400).json({ error: 'Invalid month' });
+    }
+    try {
+        // using the aghrigate to match the date month and group by the category ans count the category by sum of gategories particular
+        const transactions = await Transaction.aggregate([
+            {
+                $match: {
+                    $expr: {
+                        $eq: [{ $month: '$dateOfSale' }, Number(month)],
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: '$category',
+                    count: { $sum: 1 },
+                },
+            },
+        ]);
+
+        res.status(200).json(transactions);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ success: false, message: 'Internal server Error' });
+    }
+};
+module.exports = { getTransactions, getStatistics, getBarChartData, getPieData };
