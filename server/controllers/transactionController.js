@@ -1,3 +1,4 @@
+const env = require('../config/environment');
 const Transaction = require('../models/Transaction');
 
 const getTransactions = async (req, res) => {
@@ -217,13 +218,13 @@ const getPieData = async (req, res) => {
 const getChartData = async (req, res) => {
     const { month } = req.query;
     try {
-        const data1 = await fetch(`http://localhost:8000/api/stastics?month=${month}`, {
+        const data1 = await fetch(`http://localhost:${env.PORT}/api/stastics?month=${month}`, {
             headers: { 'Content-Type': 'Application/json' },
         });
-        const data2 = await fetch(`http://localhost:8000/api/bar-data?month=${month}`, {
+        const data2 = await fetch(`http://localhost:${env.PORT}/api/bar-data?month=${month}`, {
             headers: { 'Content-Type': 'Application/json' },
         });
-        const data3 = await fetch(`http://localhost:8000/api/pie-data?month=${month}`, {
+        const data3 = await fetch(`http://localhost:${env.PORT}/api/pie-data?month=${month}`, {
             headers: { 'Content-Type': 'Application/json' },
         });
 
