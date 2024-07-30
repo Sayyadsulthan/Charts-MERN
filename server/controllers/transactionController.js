@@ -47,11 +47,61 @@ const getTransactions = async (req, res) => {
             .skip((page - 1) * 10)
             .limit(10);
 
-        res.json(transactions);
+        res.status(200).json(transactions);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ success: false, message: 'Internal server Error' });
     }
 };
 
-module.exports = { getTransactions };
+const getStatistics = async (req, res) => {
+    try {
+        const { month } = req.query;
+        // check the valid month
+        if (month < 1 || month > 12) {
+            return res.status(400).json({ error: 'Invalid month' });
+        }
+
+        // USING THE FILTER  TO GET THE STASTICS
+
+        // find the soldItems for the current month not validate year
+        const soldItems = await Transaction.find({
+            sold: true,
+            $expr: {
+                $and: [
+                    { $gte: [{ $month: '$dateOfSale' }, month] },
+                    { $lte: [{ $month: '$dateOfSale' }, month] },
+                ],
+            },
+        });
+
+        // find the unSoldItems for the current month not validate year
+        const notSoldItems = await Transaction.find({
+            sold: false,
+            $expr: {
+                $and: [
+                    { $gte: [{ $month: '$dateOfSale' }, month] },
+                    { $lte: [{ $month: '$dateOfSale' }, month] },
+                ],
+            },
+        });
+
+        console.log(soldItems);
+        // taking the sum of current month
+        const totalSaleAmount = soldItems.reduce((total, item) => total + item.price, 0);
+        // sold and unsold items
+        const totalSoldItems = soldItems.length;
+        const totalNotSoldItems = notSoldItems.length;
+
+        res.status(200).json({
+            totalSaleAmount,
+            totalSoldItems,
+            totalNotSoldItems,
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ success: false, message: 'Internal server Error' });
+    }
+};
+
+module.exports = { getTransactions, getStatistics };
