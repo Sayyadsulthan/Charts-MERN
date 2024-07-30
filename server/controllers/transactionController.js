@@ -213,4 +213,33 @@ const getPieData = async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server Error' });
     }
 };
-module.exports = { getTransactions, getStatistics, getBarChartData, getPieData };
+
+const getChartData = async (req, res) => {
+    const { month } = req.query;
+    try {
+        const data1 = await fetch(`http://localhost:8000/api/stastics?month=${month}`, {
+            headers: { 'Content-Type': 'Application/json' },
+        });
+        const data2 = await fetch(`http://localhost:8000/api/bar-data?month=${month}`, {
+            headers: { 'Content-Type': 'Application/json' },
+        });
+        const data3 = await fetch(`http://localhost:8000/api/pie-data?month=${month}`, {
+            headers: { 'Content-Type': 'Application/json' },
+        });
+
+        const stasticsData = await data1.json();
+        const barData = await data2.json();
+        const pieData = await data3.json();
+
+        return res.status(200).json({
+            statistics: stasticsData,
+            barChart: barData,
+            pieChart: pieData,
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ success: false, message: 'Internal server Error' });
+    }
+};
+
+module.exports = { getTransactions, getStatistics, getBarChartData, getPieData, getChartData };
