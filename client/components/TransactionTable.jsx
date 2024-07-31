@@ -69,12 +69,12 @@ const TransactionTable = () => {
     };
 
     return (
-        <div>
+        <div className='container'>
             <Typography variant='h4' textAlign={'center'} fontWeight={'bolder'}>
                 {' '}
                 Transaction Table{' '}
             </Typography>
-            <select onChange={handleMonthFilterChange}>
+            <select className='select' onChange={handleMonthFilterChange}>
                 <option value='' defaultValue={1}>
                     All Months
                 </option>

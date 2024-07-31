@@ -5,6 +5,7 @@ import './App.css';
 import TransactionTable from '../components/TransactionTable';
 import axios from 'axios';
 import BarChartComponent from '../components/BarChartComponent';
+import PieChartComponent from '../components/PieChartComponent';
 
 const apiUrl = import.meta.env.VITE_API_URI;
 function App() {
@@ -25,9 +26,9 @@ function App() {
     console.log(apiUrl);
     return (
         <>
-            <h1>App Component</h1>
             <TransactionTable />
             <BarChartComponent />
+            <PieChartComponent />
         </>
     );
 }

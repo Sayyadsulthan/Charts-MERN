@@ -1,12 +1,23 @@
 import * as React from 'react';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { PieChart } from '@mui/x-charts/PieChart';
 import { useState } from 'react';
+import { useEffect } from 'react';
 import axios from 'axios';
 import { Typography } from '@mui/material';
 
-const uData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
-const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-const xLabels = ['Page A', 'Page B', 'Page C', 'Page D', 'Page E', 'Page F', 'Page G'];
+const data = [
+    { id: 0, value: 10, label: 'series A' },
+    { id: 1, value: 15, label: 'series B' },
+    { id: 2, value: 20, label: 'series C' },
+];
+/*
+[
+    { _id: "women's clothing", count: 2 },
+    { _id: 'electronics', count: 2 },
+    { _id: "men's clothing", count: 2 },
+];
+*/
+
 const months = [
     // { value: 0, month: 'All Months' },
     { value: 1, month: 'Jan' },
@@ -22,24 +33,22 @@ const months = [
     { value: 11, month: 'Nov' },
     { value: 12, month: 'Dec' },
 ];
-export default function BarChartComponent() {
-    const [month, setMonth] = useState(1);
-    const [data, setData] = useState({ countData: [], xAxis: [] });
+export default function PieChartComponent() {
     const [page, setPage] = useState(1);
-    React.useEffect(() => {
+    const [month, setMonth] = useState(1);
+    const [data, setData] = useState([]);
+    useEffect(() => {
         const fetchData = async () => {
-            const url = `http://localhost:8000/api/bar-data?page=${page}${
+            const url = `http://localhost:8000/api/pie-data?page=${page}${
                 month ? `&month=${month}` : ''
             }`;
             const response = await axios.get(url);
-            let countData = [];
-            let xAxis = [];
-            response.data.forEach((element) => {
-                countData.push(element.count);
-                xAxis.push(element._id);
-            });
-
-            setData({ countData, xAxis }); // Assuming data is in response.data
+            console.log(response.data);
+            setData(
+                response.data.map((item, ind) => {
+                    return { value: item.count, label: item._id, id: ind };
+                })
+            ); // Assuming data is in response.data
         };
 
         fetchData();
@@ -49,7 +58,6 @@ export default function BarChartComponent() {
         const selectedMonth = event.target.value;
         setMonth(selectedMonth);
     };
-
     return (
         <div className='container'>
             <Typography variant='h4' textAlign={'center'} fontWeight={'bolder'}>
@@ -64,18 +72,15 @@ export default function BarChartComponent() {
                 ))}
             </select>
 
-            <BarChart
-                width={800}
-                height={350}
+            <PieChart
                 series={[
-                    // { data: pData, label: 'pv', id: 'pvId' },
                     {
-                        data: data['countData'],
-                        label: months[month - 1].month,
-                        id: 'uvId',
+                        data,
+                        highlightScope: { faded: 'global', highlighted: 'item' },
+                        faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                     },
                 ]}
-                xAxis={[{ data: data['xAxis'], scaleType: 'band', tickPlacement: 'middle' }]}
+                height={200}
             />
         </div>
     );
