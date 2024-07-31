@@ -22,15 +22,15 @@ const months = [
     { value: 11, month: 'Nov' },
     { value: 12, month: 'Dec' },
 ];
+
+const apiUrl = import.meta.env.VITE_API_URI;
 export default function BarChartComponent() {
     const [month, setMonth] = useState(1);
     const [data, setData] = useState({ countData: [], xAxis: [] });
     const [page, setPage] = useState(1);
     React.useEffect(() => {
         const fetchData = async () => {
-            const url = `http://localhost:8000/api/bar-data?page=${page}${
-                month ? `&month=${month}` : ''
-            }`;
+            const url = `${apiUrl}/bar-data?page=${page}${month ? `&month=${month}` : ''}`;
             const response = await axios.get(url);
             let countData = [];
             let xAxis = [];

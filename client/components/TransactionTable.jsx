@@ -38,7 +38,7 @@ const months = [
     { value: 11, month: 'Nov' },
     { value: 12, month: 'Dec' },
 ];
-
+const apiUrl = import.meta.env.VITE_API_URI;
 const TransactionTable = () => {
     const [transactions, setTransactions] = useState([]);
     const [page, setPage] = useState(1);
@@ -48,9 +48,7 @@ const TransactionTable = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = `http://localhost:8000/api/transactions?page=${page}${
-                month ? `&month=${month}` : ''
-            }`;
+            const url = `${apiUrl}/transactions?page=${page}${month ? `&month=${month}` : ''}`;
             const response = await axios.get(url);
 
             setTransactions(response.data); // Assuming data is in response.data

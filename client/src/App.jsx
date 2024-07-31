@@ -13,9 +13,7 @@ function App() {
     const [month, setMonth] = useState(1);
     useEffect(() => {
         const fetchData = async () => {
-            const url = `http://localhost:8000/api/chart-data?page=${1}${
-                month ? `&month=${month}` : ''
-            }`;
+            const url = `${apiUrl}/chart-data?page=${1}${month ? `&month=${month}` : ''}`;
             const response = await axios.get(url);
             console.log(response.data);
             // setTransactions(response.data); // Assuming data is in response.data

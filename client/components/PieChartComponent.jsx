@@ -5,11 +5,6 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { Typography } from '@mui/material';
 
-const data = [
-    { id: 0, value: 10, label: 'series A' },
-    { id: 1, value: 15, label: 'series B' },
-    { id: 2, value: 20, label: 'series C' },
-];
 /*
 [
     { _id: "women's clothing", count: 2 },
@@ -33,17 +28,16 @@ const months = [
     { value: 11, month: 'Nov' },
     { value: 12, month: 'Dec' },
 ];
+
+const apiUrl = import.meta.env.VITE_API_URI;
 export default function PieChartComponent() {
     const [page, setPage] = useState(1);
     const [month, setMonth] = useState(1);
     const [data, setData] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            const url = `http://localhost:8000/api/pie-data?page=${page}${
-                month ? `&month=${month}` : ''
-            }`;
+            const url = `${apiUrl}/pie-data?page=${page}${month ? `&month=${month}` : ''}`;
             const response = await axios.get(url);
-            console.log(response.data);
             setData(
                 response.data.map((item, ind) => {
                     return { value: item.count, label: item._id, id: ind };
