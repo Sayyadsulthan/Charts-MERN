@@ -11,10 +11,12 @@ const {
     getChartData,
 } = require('./controllers/transactionController.js');
 require('./models/Transaction.js');
+const cors = require('cors');
 
 const PORT = env.PORT;
 const app = express();
 // using the middlewares / configure
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 

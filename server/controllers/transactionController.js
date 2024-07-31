@@ -3,17 +3,10 @@ const Transaction = require('../models/Transaction');
 
 const getTransactions = async (req, res) => {
     try {
-        const { search, fromMonth, toMonth, page = 1, maxPrice, minPrice } = req.query; // Extract query parameters
+        const { search, month, page = 1, maxPrice, minPrice } = req.query; // Extract query parameters
 
         // Validate for the month
-        if (
-            fromMonth === undefined ||
-            toMonth === undefined ||
-            fromMonth < 1 ||
-            fromMonth > 12 ||
-            toMonth < 1 ||
-            toMonth > 12
-        ) {
+        if (month === undefined || month < 1 || month > 12) {
             return res.status(400).json({ success: false, message: 'Invalid month range (1-12)' });
         }
 
@@ -37,8 +30,8 @@ const getTransactions = async (req, res) => {
         // filter for the month range
         filter.$expr = {
             $and: [
-                { $gte: [{ $month: '$dateOfSale' }, fromMonth] },
-                { $lte: [{ $month: '$dateOfSale' }, toMonth] },
+                { $gte: [{ $month: '$dateOfSale' }, month] },
+                { $lte: [{ $month: '$dateOfSale' }, month] },
             ],
         };
 
