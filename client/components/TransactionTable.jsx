@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import axios from 'axios';
+import { Typography } from '@mui/material';
 
 const columns = [
     // { field: '_id', headerName: 'ID', width: 100 },
@@ -51,7 +52,7 @@ const TransactionTable = () => {
                 month ? `&month=${month}` : ''
             }`;
             const response = await axios.get(url);
-            console.log(response.data);
+
             setTransactions(response.data); // Assuming data is in response.data
         };
 
@@ -69,6 +70,10 @@ const TransactionTable = () => {
 
     return (
         <div>
+            <Typography variant='h4' textAlign={'center'} fontWeight={'bolder'}>
+                {' '}
+                Transaction Table{' '}
+            </Typography>
             <select onChange={handleMonthFilterChange}>
                 <option value='' defaultValue={1}>
                     All Months
